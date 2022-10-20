@@ -57,7 +57,10 @@ app.get("/student/:studId", (req,res) => {
         <p> Program: ${data.program} </p>
         <p> GPA: ${data.gpa} </p> `;
         res.send(resText);
-    });
+    }).catch((err) => {
+        console.log(err);
+        res.json({message: err});
+    })
 });
 
 app.get("/highGPA", (req, res)=>{
