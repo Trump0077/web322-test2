@@ -16,6 +16,32 @@ function prep() {
   });
 }
 
+function allStudent(){
+    return new Promise((resolve, reject) => {
+        if (students.length === 0) {
+            reject("no results returned");
+        } else {
+            resolve(students.filter(() => { 
+                return true; 
+            }));
+        }
+    });
+}
+
+function addStudent (stuData) {
+    stuData.studId = students.length + 1;
+    students.push(stuData);
+
+    return new Promise((resolve,reject) => {
+        if (students.length === 0) {
+            reject ("no results returned");
+        }
+        else {
+            resolve(students);
+        }
+    })
+};
+
 function cpa() {
     return new Promise((resolve, reject) => {
         if (students.length === 0) {
@@ -29,22 +55,40 @@ function cpa() {
 }
 
 function highGPA() {
-    return new Promise((resolve, reject) => {
-        const highGPA = students.filter((student) => {
-            return Math.max.apply(Math,this.students.map(students => {
-                return students.gpa;
-            }));
-        });
-        if (highGPA) {
-            resolve(highGPA);
-        } else {
-            reject("Failed finding the student with the highest GPA");
+    return new Promise((resolve, reject)=>{
+        let high = 0;
+        let highStudent;
+        
+        for (let i=0; i<students.length; i++)
+        {
+            //console.log(students[i].gpa, high);
+            if (students[i].gpa > high)
+            {
+                high = students[i].gpa;
+                highStudent = students[i];
+            }
         }
-    });
+        (highStudent) ? resolve(highStudent): reject("Failed finding student with highest GPA");
+    }); 
+}
+
+function getStudent (value) {
+    return new Promise((resolve,reject) => {
+        var id = students.filter(
+            student => student.studId === value
+            );
+        if (id.length === 0) {
+            reject("no student found");
+        }
+        resolve(id);
+    })
 }
 
 module.exports = {
     prep,
     cpa,
-    highGPA
+    highGPA,
+    allStudent,
+    addStudent,
+    getStudent: getStudent
 }
