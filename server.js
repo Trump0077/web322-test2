@@ -40,7 +40,6 @@ app.get("/addStudent", (req,res) =>{
 
 app.post("/addStudent", (req,res) => {
     data_prep.addEmployee(req.body).then(() => {
-        res.redirect("/students");
         let resText = `<h2 style="color:red"> The New Student Information: </h2>
         <p> Student ID: ${data.studId} </p>
         <p> Name:  ${data.name} </p>
