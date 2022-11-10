@@ -16,43 +16,28 @@ function prep() {
   });
 }
 
+function cpa() {
+    return new Promise((resolve, reject)=>{
+        let results = students.filter(student => student.program == "CPA");
+        (results.length == 0)? reject("No CPA students."):resolve(results);
+     });
+}
+
 function allStudent(){
     return new Promise((resolve, reject) => {
-        if (students.length === 0) {
-            reject("no results returned");
-        } else {
-            resolve(students.filter(() => { 
-                return true; 
-            }));
-        }
-    });
-}
-
-function addStudent (stuData) {
-    stuData.studId = students.length + 1;
-    students.push(stuData);
-
-    return new Promise((resolve,reject) => {
-        if (students.length === 0) {
-            reject ("no results returned");
-        }
-        else {
+        if (students.length>0) {
             resolve(students);
-        }
-    })
-};
-
-function cpa() {
-    return new Promise((resolve, reject) => {
-        if (students.length === 0) {
-            reject("no results returned");
-        } else {
-            resolve(students.filter(() => { 
-                return true; 
-            }));
-        }
+        } else reject("No students.");
     });
 }
+
+function addStudent (stud) {
+    return new Promise((resolve, reject)=>{
+        stud.studId = students.length+1;
+        students.push(stud);
+        resolve();
+    });
+};
 
 function highGPA() {
     return new Promise((resolve, reject)=>{
@@ -72,15 +57,13 @@ function highGPA() {
     }); 
 }
 
-function getStudent (value) {
-    return new Promise((resolve,reject) => {
-        var id = students.filter(
-            student => student.studId === value
-            );
-        if (id.length === 0) {
-            reject("no student found");
-        }
-        resolve(id);
+function getStudent (studId) {
+    return new Promise((resolve, reject)=>{
+        students.forEach(function(student){
+            if (student.studId == studId)
+                resolve(student);
+        });
+        reject("No result found!");
     })
 }
 
@@ -90,5 +73,5 @@ module.exports = {
     highGPA,
     allStudent,
     addStudent,
-    getStudent: getStudent
+    getStudent
 }
