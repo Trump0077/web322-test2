@@ -1,77 +1,87 @@
-const fs = require('fs');
-var students = [];
+const Sequelize = require('sequelize');
 
-function prep() {
-  return new Promise((resolve, reject) => {
-    try {
-        fs.readFile('./students.json',(err,data)=>{
-            if (err) reject("unable to read file");
-            students = JSON.parse(data);
-        });
-    } catch (ex) {
-      console.log("unable to read file");
-      reject("unable to read file");
-    }
-    resolve();
-  });
-}
+var sequelize = new Sequelize('txyhlccz', 'txyhlccz', 'P4VZB1rurHhz34ndQItOjJO_rV1Ry3yq', {
+    host: 'peanut.db.elephantsql.com',
+    dialect: 'postgres',
+    port: 5432,
+    dialectOptions: {
+        ssl: true
+    },
+    query:{raw: true} 
+});
 
-function cpa() {
-    return new Promise((resolve, reject)=>{
-        let results = students.filter(student => student.program == "CPA");
-        (results.length == 0)? reject("No CPA students."):resolve(results);
-     });
-}
+sequelize.authenticate().then(()=> console.log('Connection success.')) 
+.catch((err)=>console.log("Unable to connect to DB.", err));
 
-function allStudent(){
+const Student = sequelize.define('student', {
+    StudId: {
+        type:Sequelize.INTEGER,
+        primaryKey:true,
+        autoIncrement:true
+    },
+    name:Sequelize.STRING,
+    program:Sequelize.STRING,
+    gpa:Sequelize.FLOAT,
+});
+
+exports.prep = ()=>{
     return new Promise((resolve, reject) => {
-        if (students.length>0) {
-            resolve(students);
-        } else reject("No students.");
-    });
-}
-
-function addStudent (stud) {
-    return new Promise((resolve, reject)=>{
-        stud.studId = students.length+1;
-        students.push(stud);
-        resolve();
-    });
-};
-
-function highGPA() {
-    return new Promise((resolve, reject)=>{
-        let high = 0;
-        let highStudent;
-        
-        for (let i=0; i<students.length; i++)
-        {
-            //console.log(students[i].gpa, high);
-            if (students[i].gpa > high)
-            {
-                high = students[i].gpa;
-                highStudent = students[i];
-            }
-        }
-        (highStudent) ? resolve(highStudent): reject("Failed finding student with highest GPA");
-    }); 
-}
-
-function getStudent (studId) {
-    return new Promise((resolve, reject)=>{
-        students.forEach(function(student){
-            if (student.studId == studId)
-                resolve(student);
-        });
-        reject("No result found!");
+        sequelize.sync()
+        .then(resolve())
+        .catch(reject('unable to sync the database'));
     })
 }
 
-module.exports = {
-    prep,
-    cpa,
-    highGPA,
-    allStudent,
-    addStudent,
-    getStudent
+exports.addStudent= (stud)=>{
+    return new Promise((resolve,reject) => {
+        for (var i in stud) {
+            if (stud[i] == "") { 
+                stud[i] = null;
+            }
+        }
+        Student.create(stud)
+        .then(resolve(Student.findAll()))
+        .catch(reject('unable to add the student'))
+    })
+}
+
+exports.cpa = ()=>{
+    return new Promise((resolve, reject)=>{
+        Student.findAll({
+            where:{
+                program: 'cpa'
+            }
+        })
+        .then(resolve(Student.findAll({ where: { program: 'cpa' }})))
+        .catch(reject('no results returned'))
+    });
+}
+
+exports.highGPA = ()=>{
+    return new Promise((resolve, reject)=>{
+        Student.findAll({
+            attributes: ['gpa']
+        }).then(function(students){
+            let high = 0;
+            let highStudent;
+            
+            for (let i=0; i<students.length; i++)
+            {
+                if (students[i].gpa > high)
+                {
+                    high = students[i].gpa;
+                    highStudent = students[i];
+                }
+            }
+            resolve(highStudent);
+        }).catch(reject('no results returned'))
+    }); 
+};
+
+exports.allStudents =()=>{
+    return new Promise ((resolve,reject) => {
+        Student.findAll()
+        .then(resolve(Student.findAll()))
+        .catch(reject('no results returned'));      
+    })
 }

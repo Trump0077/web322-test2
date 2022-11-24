@@ -1,66 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Add Student</title>
-    </head>
-    <body data-new-gr-c-s-check-loaded="14.1084.0" data-gr-ext-installed="">
-    
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-        
-                <h2>Add Employee</h2>
-
-                <br>
-        
-                <form method="post" action="/employees/add">
-        
-                    <fieldset>
-                        <legend>Student Information</legend>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="studId">Student Id:</label>
-                                    <input class="form-control" id="studId" name="studId" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="name">Student Name:</label>
-                                    <input class="form-control" id="name" name="name" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="program">Program</label>
-                                        <select class="form-control" name="program" id="program">
-                                            <option value="1">BSD</option>
-                                            <option value="2">CPA</option>
-                                            <option value="3">DSA</option>                                        
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="gpa">GPA:</label>
-                                    <input class="form-control" id="gpa" name="gpa" type="text">
-                                </div>
-                            </div>
-                        </div>
-        
-        
-                    </fieldset>   
-
-                    <hr>   
-
-                    <input type="submit" value="Add Student">
-                    <input type="reset" value="Reset">
-                </form>
-            </div>
-        </div>
-    </div>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <style>
+        body{
+            width: 50%;
+            margin:auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>Add Student</h2>
+    <form name="addStudent" method="post" action="/addStudent">
+        <fieldset>
+            <legend>Student Information</legend>
+        <label>Student Name: </label>
+        <input type="text" name="name">
+        <br><br>
+        <label>Program:</label>
+        <select name="program">
+            <option>BSD</option>
+            <option>CPA</option>
+            <option>DSA</option>
+        </select>
+        <br><br>
+        <label>GPA:</label>
+        <input type="text" name="gpa"> <br><br>
+        <input type="submit" value = "Add Student">
+        <input type="reset">
+    </fieldset>
+    </form>
+</body>
 </html>
